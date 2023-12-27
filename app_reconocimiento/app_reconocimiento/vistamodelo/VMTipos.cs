@@ -39,9 +39,9 @@ namespace app_reconocimiento.vistamodelo
                 var senialesList = JsonConvert.DeserializeObject<List<SenialModel>>(response);
 
                 var senialesAgrupadasList = senialesList
-                    .GroupBy(s => s.Id_Clase)
-                    .Select(g => new Grouping<string, SenialModel>(g.Key, g))
-                    .ToList();
+                .GroupBy(s => new { s.Id_Clase, s.Tipo_Senial })
+            .Select(g => new Grouping<string, SenialModel>(g.Key.Id_Clase, g.Key.Tipo_Senial, g))
+            .ToList();
 
                 foreach (var grupo in senialesAgrupadasList)
                 {
@@ -58,11 +58,13 @@ namespace app_reconocimiento.vistamodelo
     // Clase auxiliar para agrupar elementos.
     public class Grouping<K, T> : ObservableCollection<T>
     {
-        public K Key { get; private set; }
+        public K Id_Clase { get; private set; }
+        public string Tipo_Senial { get; private set; }
 
-        public Grouping(K key, IEnumerable<T> items)
+        public Grouping(K idClase, string tipoSenial, IEnumerable<T> items)
         {
-            Key = key;
+            Id_Clase = idClase;
+            Tipo_Senial = tipoSenial;
             foreach (var item in items)
                 this.Items.Add(item);
         }
