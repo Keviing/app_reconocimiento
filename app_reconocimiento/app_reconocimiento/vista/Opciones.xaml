@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="app_reconocimiento.vista.Opciones"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.Content >
+        <StackLayout BackgroundColor="#4c4c4c">
+            <Grid RowDefinitions="50,*">
+                <StackLayout Orientation="Horizontal">
+                    <Image Source="exit.png"
+                           HeightRequest="25"
+                           Margin="15,0,0,0">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                Command="{Binding RetrocederCommand}"/>
+                        </Image.GestureRecognizers>
+                        
+                    </Image>
+                
+                    
+                    <Image Source="interrogatorio.png"
+                           HeightRequest="25"
+                           HorizontalOptions="EndAndExpand"
+                           Margin="0,0,20,0"/>
+                    
+                </StackLayout>
+                
+                <StackLayout Grid.Row="1" Margin="20,200,0,0">
+
+                    <Grid Margin="0,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="250" />
+                        </Grid.ColumnDefinitions>
+
+                        <Image Source="camara.png"  HeightRequest="20" WidthRequest="55"  />
+                        <Button Grid.Column="1" BackgroundColor="SkyBlue" Text="CAPTURAR" WidthRequest="300" CornerRadius="15" 
+                               
+                                Command="{Binding IrCapturaCommand}"/>
+
+                    </Grid>
+
+                    <Grid Margin="0,30,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="250" />
+                        </Grid.ColumnDefinitions>
+
+                        <Image Source="aplicaciones.png"  HeightRequest="20" WidthRequest="55"  />
+                        <Button Grid.Column="1" BackgroundColor="SkyBlue" Text="Tipos de señales" WidthRequest="300" CornerRadius="15" 
+                                Command="{Binding IrTiposCommand}"/>
+
+                    </Grid>
+
+                    <Grid Margin="0,30,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="250" />
+                        </Grid.ColumnDefinitions>
+
+                        <Image Source="leyes.png"  HeightRequest="20" WidthRequest="55"  />
+                        <Button Grid.Column="1" BackgroundColor="SkyBlue" 
+                                Text="Ley de Tránsito" WidthRequest="300" 
+                                CornerRadius="15"
+                                Command="{Binding IrLeyesCommand}"/>
+
+                    </Grid>
+                </StackLayout>
+                
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

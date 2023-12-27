@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="app_reconocimiento.vista.Inicio"
+             NavigationPage.HasNavigationBar="False">
+    <Grid  BackgroundColor="#4c4c4c">
+        <StackLayout Margin="30,30,30,0">
+
+            <Image Source="Icono_Main.png" />
+
+            <Frame BackgroundColor="#4c4c4c"
+                   BorderColor="SkyBlue"
+                   CornerRadius="15">
+                <StackLayout>
+                    <Label Text="INFORMACIÓN" TextColor="White" HorizontalTextAlignment="Center" FontSize="15" FontAttributes="Bold" />
+                    <Label Text="Apunte con la cámara de su dispositivo a una señal de transito y espere que la aplicación la reconozca" FontSize="15" HorizontalTextAlignment="Center" TextColor="White"/>
+                </StackLayout>
+            </Frame>
+            
+            <Button  
+                Margin="0,40,0,0"
+                FontAttributes="Bold"
+                Text="INICIAR" 
+                TextColor="White"
+                BackgroundColor="SkyBlue"
+                Command="{Binding IniciarCommand}"    
+                />
+        </StackLayout>
+    </Grid>
+</ContentPage>
