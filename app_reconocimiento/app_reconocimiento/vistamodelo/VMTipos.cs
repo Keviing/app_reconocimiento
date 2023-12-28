@@ -1,4 +1,5 @@
 ﻿using app_reconocimiento.modelo;
+using app_reconocimiento.vista;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace app_reconocimiento.vistamodelo
@@ -28,6 +30,25 @@ namespace app_reconocimiento.vistamodelo
             CargarSeniales();
         }
 
+        private SenialModel senialSeleccionada;
+        public SenialModel SenialSeleccionada
+        {
+            get => senialSeleccionada;
+            set
+            {
+                if (value != null && SetProperty(ref senialSeleccionada, value))
+                {
+                    MostrarDetalleSenial(value);
+                }
+            }
+        }
+
+        private async void MostrarDetalleSenial(SenialModel senial)
+        {
+            // Aquí implementar la navegación a la vista de detalles
+            await Navigation.PushAsync(new DetalleSenial(senial));
+            SenialSeleccionada = null; // Resetear la selección
+        }
         private async Task CargarSeniales()
         {
             try
@@ -53,6 +74,14 @@ namespace app_reconocimiento.vistamodelo
                 await DisplayAlert("Error", $"Error al cargar las señales: {ex.Message}", "OK");
             }
         }
+
+        public async Task Retroceder()
+        {
+            await Navigation.PopAsync();
+        }
+
+        public ICommand RetrocederCommand => new Command(async () => await Retroceder());
+
     }
 
     // Clase auxiliar para agrupar elementos.

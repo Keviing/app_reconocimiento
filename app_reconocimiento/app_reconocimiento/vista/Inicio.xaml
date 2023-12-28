@@ -3,12 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="app_reconocimiento.vista.Inicio"
              NavigationPage.HasNavigationBar="False">
-    <Grid  BackgroundColor="#4c4c4c">
+    <Grid  BackgroundColor="#2C2C38">
         <StackLayout Margin="30,30,30,0">
 
             <Image Source="Icono_Main.png" />
 
-            <Frame BackgroundColor="#4c4c4c"
+            <Frame BackgroundColor="#2C2C38"
                    BorderColor="SkyBlue"
                    CornerRadius="15">
                 <StackLayout>

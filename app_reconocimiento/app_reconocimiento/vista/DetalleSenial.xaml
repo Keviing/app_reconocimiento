@@ -1,0 +1,54 @@
+﻿<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="app_reconocimiento.vista.DetalleSenial"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#2C2C38">
+    <StackLayout >
+        <Grid RowDefinitions="50,*">
+
+        <StackLayout Orientation="Horizontal">
+            <Image Source="exit.png"
+                           HeightRequest="25"
+                           Margin="15,0,0,0"
+                   
+                   >
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer 
+                                Command="{Binding RetrocederCommand}"/>
+                </Image.GestureRecognizers>
+
+            </Image>
+
+        </StackLayout>
+
+
+        <StackLayout Grid.Row="1" Margin="0,10,0,0">
+            <Grid Margin="0,150,0,0">
+                <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="380" />
+                        <ColumnDefinition Width="220" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="{Binding Nombre}" FontSize="Large" TextColor="White" FontAttributes="Bold" Margin="0,10,0,0" HorizontalTextAlignment="Center"/>
+                </Grid>
+                <Grid Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="380" />
+                        <ColumnDefinition Width="200" />
+                    </Grid.ColumnDefinitions>
+
+                    <Image Source="{Binding Imagen}"  WidthRequest="140" HeightRequest="140" Aspect="AspectFit" Margin="0,10,0,0"/>
+                </Grid>
+                <Grid Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="380" />
+                        <ColumnDefinition Width="200" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="{Binding Descripcion}" TextColor="White" Margin="0,30,0,0" FontSize="20" HorizontalTextAlignment="Center" />
+                </Grid>
+               
+            </StackLayout>
+        </Grid>
+    </StackLayout>
+</ContentPage>

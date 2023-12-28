@@ -2,9 +2,10 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="app_reconocimiento.vista.Opciones"
-             NavigationPage.HasNavigationBar="False">
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#2C2C38">
     <ContentPage.Content >
-        <StackLayout BackgroundColor="#4c4c4c">
+        <StackLayout BackgroundColor="#2C2C38">
             <Grid RowDefinitions="50,*">
                 <StackLayout Orientation="Horizontal">
                     <Image Source="exit.png"
