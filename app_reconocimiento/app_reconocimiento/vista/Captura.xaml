@@ -1,30 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<ContentPage x:Class="app_reconocimiento.vista.Captura"
+             xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="app_reconocimiento.vista.Captura">
+             xmlns:vm="clr-namespace:app_reconocimiento.vistamodelo;assembly=app_reconocimiento"
+             >
     <ContentPage.Content>
-        <StackLayout BackgroundColor="#4c4c4c">
-            <Grid RowDefinitions="50,*">
-                <StackLayout Orientation="Horizontal">
-                    <Image Source="exit.png"
-                           HeightRequest="25"
-                           Margin="15,0,0,0"/>
+        <StackLayout>
+            <!-- Agrega tu diseño aquí -->
 
+            <Button Text="Capturar" Command="{Binding CapturarCommand}" />
 
-                    <Image Source="interrogatorio.png"
-                           HeightRequest="25"
-                           HorizontalOptions="EndAndExpand"
-                           Margin="0,0,20,0"/>
+            <Image Source="{Binding Foto}" Aspect="AspectFit" />
 
-                </StackLayout>
-
-                <StackLayout Grid.Row="1" Margin="20,200,0,0">
-
-                    <Image  Source="camara.png" HeightRequest="80" WidthRequest="80"/>
-
-                </StackLayout>
-
-            </Grid>
+            <!-- Otros elementos de diseño si es necesario -->
         </StackLayout>
+
     </ContentPage.Content>
 </ContentPage>

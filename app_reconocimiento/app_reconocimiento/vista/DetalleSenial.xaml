@@ -41,11 +41,11 @@
                 </Grid>
                 <Grid Margin="0,10,0,0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="380" />
+                        <ColumnDefinition Width="330" />
                         <ColumnDefinition Width="200" />
                     </Grid.ColumnDefinitions>
 
-                    <Label Text="{Binding Descripcion}" TextColor="White" Margin="0,30,0,0" FontSize="20" HorizontalTextAlignment="Center" />
+                    <Label Text="{Binding Descripcion}" TextColor="White" Margin="40,30,0,0" FontSize="20" HorizontalTextAlignment="Center" />
                 </Grid>
                
             </StackLayout>
