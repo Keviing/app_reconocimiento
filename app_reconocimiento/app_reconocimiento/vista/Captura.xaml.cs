@@ -17,7 +17,7 @@ namespace app_reconocimiento.vista
         public Captura()
         {
             InitializeComponent();
-            BindingContext = new VMCaptura(new FlaskApiService()); // Reemplaza FlaskApiService con tu implementación real
+            BindingContext = new VMCaptura(); // Reemplaza FlaskApiService con tu implementación real
 
         }
     }

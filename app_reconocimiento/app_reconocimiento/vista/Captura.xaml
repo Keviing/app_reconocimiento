@@ -5,14 +5,9 @@
              xmlns:vm="clr-namespace:app_reconocimiento.vistamodelo;assembly=app_reconocimiento"
              >
     <ContentPage.Content>
-        <StackLayout>
-            <!-- Agrega tu diseño aquí -->
-
-            <Button Text="Capturar" Command="{Binding CapturarCommand}" />
-
-            <Image Source="{Binding Foto}" Aspect="AspectFit" />
-
-            <!-- Otros elementos de diseño si es necesario -->
+        
+        <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+            <Button Text="Abrir Cámara" Command="{Binding OpenCameraCommand}" />
         </StackLayout>
 
     </ContentPage.Content>

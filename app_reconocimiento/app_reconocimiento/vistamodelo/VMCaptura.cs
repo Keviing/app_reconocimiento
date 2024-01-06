@@ -1,8 +1,12 @@
 ﻿using app_reconocimiento.modelo;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
@@ -12,178 +16,67 @@ namespace app_reconocimiento.vistamodelo
 {
     public class VMCaptura: BaseViewModel
     {
-        private readonly IFlaskApiService flaskApiService;
-        private ImageSource foto;
-        public  ImageSource Foto
+        private ImageSource _capturedImage;
+        public ImageSource CapturedImage
         {
-            get { return foto; }
-            set
-            {
-                foto = value;
-                OnPropertyChanged(); // Asegúrate de tener la lógica de notificación de cambios
-            }
+            get => _capturedImage;
+            set => SetProperty(ref _capturedImage, value);
         }
 
-        private byte[] imageData;
+        public ICommand OpenCameraCommand { get; }
 
-
-        // Propiedad para el layout que mostrará los resultados de la detección
-        private AbsoluteLayout layoutResultados;
-        public AbsoluteLayout LayoutResultados
+        public VMCaptura()
         {
-            get { return layoutResultados; }
-            set
-            {
-                layoutResultados = value;
-                OnPropertyChanged(); // Asegúrate de tener la lógica de notificación de cambios
-            }
+            OpenCameraCommand = new Command(async () => await OpenCameraAsync());
         }
-
-        public ICommand CapturarCommand => new Command(async () => await Capturar());
-
-        public VMCaptura(IFlaskApiService flaskApiService)
-        {
-            this.flaskApiService = flaskApiService;
-        }
-
-        private async Task Capturar()
+      
+        // LOGICA PARA ABRIR LA CAMARA
+        private async Task OpenCameraAsync()
         {
             try
             {
-                var status = await Permissions.RequestAsync<Permissions.Camera>();
-
-                if (status != PermissionStatus.Granted)
-                {
-                    // Maneja el caso donde el usuario no otorga permisos para la cámara
-                    await DisplayAlert("Error", "Se requieren permisos de la cámara", "OK");
+                var photo = await MediaPicker.CapturePhotoAsync();
+                if (photo == null)
                     return;
-                }
 
-                var foto = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
+                using (var stream = await photo.OpenReadAsync())
                 {
-                    Title = "Capturar Foto"
-                });
+                    CapturedImage = ImageSource.FromStream(() => stream);
 
-                if (foto != null)
-                {
-                    // Verifica que imageData no sea nulo
-                    using (MemoryStream memoryStream = new MemoryStream())
-                    {
-                        using (var stream = await foto.OpenReadAsync())
-                        {
-                            await stream.CopyToAsync(memoryStream);
-                        }
-
-                        imageData = memoryStream.ToArray();
-                        string imagenBase64 = ConvertirImagenABase64(imageData);
-
-                        // Verifica que flaskApiService no sea nulo
-                        if (flaskApiService != null && imagenBase64 != null)
-                        {
-                            var boxes = await flaskApiService.DetectObjects(imagenBase64);
-                            Console.WriteLine("Captura realizada");
-
-                            // Muestra los resultados en la interfaz de usuario
-                            MostrarResultados(boxes);
-                        }
-                        else
-                        {
-                            Console.WriteLine("flaskApiService es nulo.");
-                        }
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("La foto capturada es nula.");
+                    // Convertir y enviar la imagen
+                    var base64Image = ConvertImageToBase64(stream);
+                    var serverResponse = await SendImageToServer(base64Image);
                 }
             }
             catch (Exception ex)
             {
-                // Maneja errores
-                Console.WriteLine($"Error durante la captura: {ex.Message}");
-                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+                // Manejar excepciones (p.ej., permisos de cámara no concedidos)
+                await DisplayAlert("Error", "No se pudo abrir la cámara: " + ex.Message, "OK");
             }
         }
-
-         private void MostrarResultados(List<List<object>> boxes)
-         {
-             // Aquí puedes implementar la lógica para mostrar los resultados en la interfaz de usuario
-
-             // Supongamos que tienes un objeto de tipo Image llamado 'Foto' en tu vista
-             Foto = ImageSource.FromStream(() => new MemoryStream(imageData));
-
-             // Supongamos que tienes un objeto de tipo AbsoluteLayout llamado 'LayoutResultados' en tu vista
-             // y que 'LayoutResultados' es una propiedad en tu clase CapturaViewModel
-             LayoutResultados.Children.Clear();
-
-             foreach (var box in boxes)
-             {
-                 // Obtén los valores de la caja
-                 double x1 = Convert.ToDouble(box[0]);
-                 double y1 = Convert.ToDouble(box[1]);
-                 double x2 = Convert.ToDouble(box[2]);
-                 double y2 = Convert.ToDouble(box[3]);
-                 string etiqueta = Convert.ToString(box[4]);
-                 double probabilidad = Convert.ToDouble(box[5]);
-
-                 // Supongamos que tienes un objeto de tipo BoxView para representar la caja
-                 var cajaView = new BoxView
-                 {
-                     Color = Color.Transparent,
-                     BackgroundColor = Color.Transparent, // Usar BackgroundColor en lugar de Color
-                     Margin = new Thickness(x1, y1, 0, 0),
-                     WidthRequest = x2 - x1,
-                     HeightRequest = y2 - y1
-                 };
-
-                 // Supongamos que tienes un objeto de tipo Label para mostrar la etiqueta y la probabilidad
-                 var infoLabel = new Label
-                 {
-                     Text = $"{etiqueta} ({probabilidad:P2})",
-                     TextColor = Color.Green,
-                     FontSize = 12,
-                     Margin = new Thickness(x1, y1 - 20, 0, 0)
-                 };
-
-                 // Agrega la caja y la etiqueta a LayoutResultados
-                 LayoutResultados.Children.Add(cajaView, new Point(x1, y1));
-                 LayoutResultados.Children.Add(infoLabel, new Point(x1, y1 - 20));
-             }
-         }
-
-         
-        private byte[] ObtenerDatosDeImagen()
+        private string ConvertImageToBase64(Stream stream)
         {
-            // Implementa la lógica para obtener los datos de la imagen capturada
-            // Puedes usar la API de Xamarin.Essentials MediaPicker para seleccionar o tomar una foto
-
-            // Ejemplo utilizando MediaPicker para seleccionar una foto de la galería
-            var opciones = new MediaPickerOptions
-            {
-                Title = "Seleccionar foto"
-            };
-
-            var foto = MediaPicker.PickPhotoAsync(opciones).Result;
-
-            if (foto != null)
-            {
-                using (var fotoStream = foto.OpenReadAsync().Result)
-                {
-                    var memoryStream = new MemoryStream();
-                    fotoStream.CopyTo(memoryStream);
-                    return memoryStream.ToArray();
-                }
-            }
-
-            return null;
+            byte[] buffer = new byte[stream.Length];
+            stream.Read(buffer, 0, buffer.Length);
+            string base64ImageRepresentation = Convert.ToBase64String(buffer); 
+            return base64ImageRepresentation;
         }
-        private string ConvertirImagenABase64(byte[] imageData)
-        {
-            if (imageData != null)
-            {
-                return Convert.ToBase64String(imageData);
-            }
 
+        private async Task<string> SendImageToServer(string base64Image)
+        {
+            var httpClient = new HttpClient();
+            var jsonRequest = JsonConvert.SerializeObject(new { image = base64Image });
+            Debug.WriteLine("JSON que se enviará: " + jsonRequest);
+
+            var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+            var response = await httpClient.PostAsync("http://192.168.100.73:4000/detect", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var serverResponse = await response.Content.ReadAsStringAsync();
+                Debug.WriteLine("Respuesta del servidor: " + serverResponse);
+                return serverResponse;
+            }
             return null;
         }
     }
